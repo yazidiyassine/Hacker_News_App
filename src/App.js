@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { Component } from "react";
 
-
 const list = [
   {
     title: "React",
@@ -46,13 +45,72 @@ class App extends Component {
   onSearchChange(event) {
     this.setState({ searchTerm: event.target.value });
   }
+  render() {
+    const { searchTerm, list } = this.state;
+    return (
+      <div className="App">
+        <Search value={searchTerm} onChange={this.onSearchChange}>
+          Search
+        </Search>
+        <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
+      </div>
+    );
+  }
+}
 
+class Search extends Component {
+  render() {
+    const { value, onChange, children } = this.props;
+    return (
+      <form>
+        {children} <input type="text" value={value} onChange={onChange} />
+      </form>
+    );
+  }
+}
+
+class Table extends Component {
+  render() {
+    /*
+  The props, short form for properties, have all the
+  values you have passed to the components when you used them in your App component.
+  That way,components can pass properties down the component tree.
+    */
+    const { list, pattern, onDismiss } = this.props;
+    return (
+      <div>
+        {list.filter(isSearched(pattern)).map((item) => (
+          <div key={item.objectID}>
+            <span>
+              <a href={item.url}>{item.title}</a>
+            </span>
+            <span>{item.author}</span>
+            <span>{item.num_comments}</span>
+            <span>{item.points}</span>
+            <span>
+              <button onClick={() => onDismiss(item.objectID)} type="button">
+                Dismiss
+              </button>
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+}
+/*
   // ==> Iterations with Forms and Events
   render() {
+    // Destructuring Assignment
+    const [list, searchTerm] = this.state;
     return (
       <div className="App">
         <form>
-          <input onChange={this.onSearchChange} type="text" />
+          <input
+            onChange={this.onSearchChange}
+            value="searchTerm"
+            type="text"
+          />
         </form>
         {this.state.list
           .filter(isSearched(this.state.searchTerm))
@@ -78,7 +136,7 @@ class App extends Component {
     );
   }
 }
-
+*/
 // Binding
 /*class ExplainBindingComponents extends Component {
   // ==> Binding using the bind() inside the constructor
